@@ -23,21 +23,25 @@ with(totalPm25emissionBaltimoreCity, plot(year, emission, xaxp = c(1999,2008,3),
 
 #3
 typeOfPm25emissionBaltimoreCity <- summarize(group_by(pm25emissionBaltimoreCity, year, type), emission = sum(Emissions, na.rm=TRUE))
-qplot(year, emission, 
+plot(
+  qplot(year, emission, 
       data = typeOfPm25emissionBaltimoreCity,
       scale_x_continuous(breaks = seq(1999,2008,3)),
       col = type, 
       geom = c("line", "point"),
       ylab = "PM2.5 emission [ton]",
       main="Type of PM2.5 emission sources in Baltimore City, MD"
+  )
 )
-ggplot(data = typeOfPm25emissionBaltimoreCity, aes(x=year, y=emission, col = type)) +
+plot(
+  ggplot(data = typeOfPm25emissionBaltimoreCity, aes(x=year, y=emission, col = type)) +
         scale_x_continuous(breaks = seq(1999,2008, 3)) +
         geom_point() +
         geom_line() +
         ylab("PM2.5 emission [ton]") + 
         ggtitle("Type of PM2.5 emission sources in Baltimore City, MD")
-        
+)
+
 #4
 #coal <- which(grepl("[Cc]oal",SCC$Short.Name))
 coal <- which(grepl("[Cc]oal",SCC$EI.Sector))
@@ -45,13 +49,15 @@ coalEmission <- filter(NEI, NEI$SCC %in% SCC$SCC[coal])
 #coalEmissionSource <- summarize(group_by(coalEmission,SCC, year), emission = sum(Emissions))
 coalEmissionSource <- summarize(group_by(coalEmission, year), emission = sum(Emissions))
 
-#ggplot(coalEmissionSource, aes(x=year, y=emission, col = SCC)) +
-ggplot(coalEmissionSource, aes(x=year, y=emission)) +
+plot(
+  #ggplot(coalEmissionSource, aes(x=year, y=emission, col = SCC)) +
+  ggplot(coalEmissionSource, aes(x=year, y=emission)) +
         scale_x_continuous(breaks = seq(1999,2008, 3)) +
         geom_point(col ="dark green") +
         geom_line(col ="dark green") +
         ylab("PM2.5 emission [ton]") +
         ggtitle("PM2.5 emissions from coal combustion-related sources in the US")
+)
 
 coalEmissionSource        
 
@@ -61,21 +67,23 @@ vehicleEmissionBaltimoreCity <- filter(NEI, NEI$SCC %in% SCC$SCC[vehicle], fips 
 totalVehicleEmissionBaltimoreCity <- summarize(group_by(vehicleEmissionBaltimoreCity, year, fips), emission = sum(Emissions))
 totalVehicleEmissionBaltimoreCity
 
-ggplot(totalVehicleEmissionBaltimoreCity, aes(year, emission)) +
+plot(
+  ggplot(totalVehicleEmissionBaltimoreCity, aes(year, emission)) +
         scale_x_continuous(breaks = seq(1999,2008, 3)) +
         geom_point(col ="dark red") +
         geom_line(col ="dark red") +
         ylab("PM2.5 emission [ton]") +
         ggtitle("PM2.5 emissions from motor vehicle sources in Baltimore City, MD")
-
+)
 #6
 vehicleEmissionLosAngelesCounty <- filter(NEI, NEI$SCC %in% SCC$SCC[vehicle], fips == "06037")
 totalVehicleEmissionLosAngelesCounty <- summarize(group_by(vehicleEmissionLosAngelesCounty, year, fips), emission = sum(Emissions))
 totalVehicleEmissionLosAngelesCounty
 
 totalVehicleEmission <- rbind(totalVehicleEmissionBaltimoreCity, totalVehicleEmissionLosAngelesCounty)
-        
-ggplot(totalVehicleEmission, aes(year, emission, col = fips)) +
+
+plot(
+  ggplot(totalVehicleEmission, aes(year, emission, col = fips)) +
         geom_point() +
         geom_line() +
         ggtitle("PM2.5 emissions from motor vehicle sources") +
@@ -83,5 +91,5 @@ ggplot(totalVehicleEmission, aes(year, emission, col = fips)) +
         scale_color_manual("", 
                             labels = c("Los Angeles County", "Baltimore City"),
                             values = c("dark blue", "dark red"))
-        
+)        
 
